@@ -37,7 +37,7 @@ jobs:
       - name: Build Website
         run: npm run build
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN:  ${{ secrets.ACCESS_TOKEN }}
       # 复制构建产物到 docs 目录（GitHub Pages 源目录）
       - name: Copy build output to docs directory
         run: |
