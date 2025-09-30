@@ -41,6 +41,15 @@ jobs:
       # 上传构建产物
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
+      - name: Copy build output to docs directory
+        run: |
+          # 创建 docs 目录（若不存在）
+          New-Item -ItemType Directory -Path docs -Force
+          # 复制 dist 目录下所有文件到 docs 目录
+          Copy-Item -Path dist/* -Destination docs/ -Recurse -Force
+      # 上传构建产物
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: Home
           path: dist
