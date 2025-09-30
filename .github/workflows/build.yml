@@ -38,16 +38,30 @@ jobs:
         run: npm run build
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      # 上传构建产物
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+      # 复制构建产物到 docs 目录（GitHub Pages 源目录）
       - name: Copy build output to docs directory
         run: |
           # 创建 docs 目录（若不存在）
           New-Item -ItemType Directory -Path docs -Force
           # 复制 dist 目录下所有文件到 docs 目录
           Copy-Item -Path dist/* -Destination docs/ -Recurse -Force
-      # 上传构建产物
+      # 配置 Git 提交信息
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+      # 提交 docs 目录变更
+      - name: Commit docs changes
+        run: |
+          git add docs/
+          git commit -m "Update docs with latest build [skip ci]" || echo "No changes to commit"
+      # 推送变更到当前分支
+      - name: Push changes to branch
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
+          branch: ${{ github.ref }}
+      # 上传构建产物（仅保留必要的一个）
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
